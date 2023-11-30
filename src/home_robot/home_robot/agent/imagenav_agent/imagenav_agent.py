@@ -27,7 +27,10 @@ from .frontier_exploration import FrontierExplorationPolicy
 from .obs_preprocessor import ObsPreprocessor
 from .visualizer import NavVisualizer
 
-
+"""
+用于自动化探索和目标检测的 PyTorch 模块。它维护一个二维地图，利用前沿探索策略进行探索，并通过关键点对应关系检测和定位目标对象。
+为自动化探索和目标检测提供了一个综合框架。通过结合地图更新、前沿探索和关键点匹配，IINAgentModule 能够高效地导航和识别环境中的特定目标。
+"""
 class IINAgentModule(nn.Module):
     """
     An agent module that maintains a 2D map, explores with FBE, and detects and
@@ -35,6 +38,7 @@ class IINAgentModule(nn.Module):
     """
 
     def __init__(self, config: DictConfig) -> None:
+        # 配置了语义地图模块 Categorical2DSemanticMapModule 和探索策略 FrontierExplorationPolicy，包括摄像机视野、地图尺寸和分辨率等参数。
         super().__init__()
 
         self.semantic_map_module = Categorical2DSemanticMapModule(
@@ -65,9 +69,11 @@ class IINAgentModule(nn.Module):
         self.exploration_policy = FrontierExplorationPolicy()
 
     @property
+    # 提供探索策略更新目标的步数间隔。
     def goal_update_steps(self) -> int:
         return self.exploration_policy.goal_update_steps
-
+        
+    # 利用 SuperGlue 算法检测和定位目标。该方法根据匹配和置信度分数确定目标是否被找到，并更新目标地图。
     def superglue(
         self,
         goal_map: torch.Tensor,
@@ -99,7 +105,8 @@ class IINAgentModule(nn.Module):
             goal_map[e, 0] = local_map[e, -1]
 
         return goal_map, found_goal
-
+    # 根据一系列观测值和姿态变化更新地图和姿态，并从地图特征中预测高级目标。
+    # 处理观测序列，更新局部和全局地图，然后使用前沿探索策略和 SuperGlue 算法预测目标位置。
     def forward(
         self,
         seq_obs: torch.Tensor,
@@ -231,11 +238,16 @@ class IINAgentModule(nn.Module):
             seq_origins,
         )
 
-
+"""
+用于导航至由图像指定的对象。该代理利用深度学习和传统计算机视觉技术综合处理观测数据，并决定最佳的导航行动。
+为导航到由图像指定的目标提供了一个全面的解决方案。它结合了语义地图、前沿探索策略和关键点匹配，使代理能够有效地识别和导航到环境中的特定目标。
+"""
 class ImageNavAgent(Agent):
     """Class for a modular agent that navigates to objects specified by images."""
-
+    
     def __init__(self, config: DictConfig, device_id: int = 0) -> None:
+        # 初始化 ImageNavAgent 类的实例。配置了观测预处理器、地图状态、规划器等，并将模块移动到指定的设备（如 GPU）。
+
         self.device = torch.device(f"cuda:{device_id}")
         self.obs_preprocessor = ObsPreprocessor(config, self.device)
 
@@ -305,6 +317,8 @@ class ImageNavAgent(Agent):
             )
 
     def reset(self) -> None:
+        # 初始化或重置代理的状态，准备进行新的任务或环境实例。
+
         """Initialize agent state."""
         self.obs_preprocessor.reset()
         if self.visualizer is not None:
@@ -318,6 +332,8 @@ class ImageNavAgent(Agent):
         self.planner.reset()
 
     def act(self, obs: Observations) -> DiscreteNavigationAction:
+        # 根据当前的观测数据来决定代理的下一个行动。这包括预处理观测数据、更新地图、确定导航目标、并使用规划器来决定下一步的移动。
+
         """Act end-to-end."""
         (
             obs_preprocessed,
@@ -360,6 +376,8 @@ class ImageNavAgent(Agent):
 
     @torch.no_grad()
     def _prepare_planner_inputs(
+        # 处理观测数据和代理的当前状态，生成规划器所需的输入。这涉及到更新地图、处理摄像机姿态、确定目标位置等。
+
         self,
         obs: torch.Tensor,
         pose_delta: torch.Tensor,
@@ -451,6 +469,8 @@ class ImageNavAgent(Agent):
         return planner_inputs, vis_inputs
 
     def _prep_goal_map_input(self) -> None:
+        # 对目标地图进行可选的聚类处理，以减少噪声并提高目标检测的准确性。
+
         """
         Perform optional clustering of the goal channel to mitigate noisy projection
         splatter.
