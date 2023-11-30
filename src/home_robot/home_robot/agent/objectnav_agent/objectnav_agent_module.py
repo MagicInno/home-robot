@@ -21,6 +21,11 @@ debug_frontier_map = False
 
 
 class ObjectNavAgentModule(nn.Module):
+    """
+    ObjectNavAgentModule 类是一个神经网络模块，
+    用于处理来自机器人或模拟环境的观测数据，并预测高层次的导航目标。
+    这个类是基于 2D 语义地图的目标导航代理（例如 ObjectNavAgent）的核心组件
+    """
     def __init__(self, config, instance_memory: Optional[InstanceMemory] = None):
         super().__init__()
         self.instance_memory = instance_memory
@@ -85,6 +90,8 @@ class ObjectNavAgentModule(nn.Module):
     ):
         """Update maps and poses with a sequence of observations, and predict
         high-level goals from map features.
+        根据输入的观测序列和其他相关信息更新本地和全局语义地图，预测高层次的导航目标。
+        这包括处理观测数据序列（如 RGB 图像、深度和语义分割）、计算机器人的位姿变化、更新地图状态，并基于地图特征预测导航目标。
 
         Arguments:
             seq_obs: sequence of frames containing (RGB, depth, semantic_segmentation, instance_segmentation)
