@@ -10,7 +10,20 @@ from typing import Any, Dict, Tuple
 from home_robot.core.interfaces import Observations
 from home_robot.perception.constants import RearrangeDETICCategories
 from home_robot.perception.detection.detic.detic_perception import DeticPerception
+"""
+这段代码定义了一个名为 OvmmPerception 的类，它是一个用于物体操作任务中的感知处理模块。
+此类包装了 DETIC 感知模型，用于在对象操作和操控任务中提供视觉感知支持。这个类主要做了以下几件事情：
 
+初始化：类接收配置参数，创建一个 DETIC 感知模型的实例。DETEC 是一种用于图像中物体检测和语义分割的深度学习模型。
+
+维护和切换词汇表：类中有功能来维护（update_vocabulary_list）和切换（set_vocabulary）不同的词汇表，这些词汇表用于在图像中识别和标记不同的物体。
+
+处理观测数据：_process_obs 方法处理从环境接收到的观测数据，添加有关对象和其他元数据的指针到分割掩码中。
+
+预测：predict 方法运行 DETIC 模型对观测数据进行预测，生成语义分割掩码。此方法可以选择是否绘制实例预测。
+
+前向传播：forward 方法运行预测并对观测数据进行后处理，为对象操作和操控任务准备数据。
+"""
 
 def read_category_map_file(
     category_map_file: str,
