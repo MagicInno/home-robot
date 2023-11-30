@@ -20,7 +20,8 @@ from home_robot.perception.detection.detic.detic_mask import Detic
 
 from .superglue import Matching
 """
-预处理原始的 home-Robot 观测数据，以供 ImageNav 代理使用。这个类的主要目的是处理来自虚拟环境的图像、深度和姿态数据，并准备用于代理决策的输入
+预处理原始的 home-Robot 观测数据，以供 ImageNav 代理使用。
+这个类的主要目的是处理来自虚拟环境的图像、深度和姿态数据，并准备用于代理决策的输入
 """
 
 class ObsPreprocessor:
