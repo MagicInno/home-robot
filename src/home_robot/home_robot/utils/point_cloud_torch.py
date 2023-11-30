@@ -20,7 +20,7 @@ from torch_geometric.nn.pool.voxel_grid import voxel_grid
 
 from home_robot.utils.image import Camera
 
-
+# 将深度图转换为三维空间坐标的点云。
 def depth_to_xyz(depth: torch.Tensor, camera: Camera):
     """get depth from numpy using simple pinhole camera model"""
     # TODO: convert to torch:
@@ -40,7 +40,7 @@ def depth_to_xyz(depth: torch.Tensor, camera: Camera):
     xyz = torch.stack([x, y, z], axis=-1)
     return xyz
 
-
+# 将深度图像转换为三维坐标，并将其与相机的内参和外参矩阵结合，适用于处理带有遮罩的 RGBD 图像。这个函数返回深度图像中未被遮罩的部分对应的三维坐标。
 def unproject_masked_depth_to_xyz_coordinates(
     depth: torch.Tensor,
     pose: torch.Tensor,
@@ -95,7 +95,7 @@ def unproject_masked_depth_to_xyz_coordinates(
 
     return xyz
 
-
+# 在三维有序点云上添加（近似）高斯过程噪声。这通常用于数据增强，模拟现实世界环境中的传感器噪声。
 def add_additive_noise_to_xyz(
     xyz_img: torch.Tensor,
     gp_rescale_factor_range: Optional[List[int]] = [12, 20],
@@ -132,7 +132,7 @@ def add_additive_noise_to_xyz(
 
     return xyz_img
 
-
+# 在深度图像上随机移除一些椭圆形区域，这是一种数据增强技术，用于提高模型对遮挡和不完整数据的鲁棒性。
 def dropout_random_ellipses(
     depth_img: torch.Tensor,
     dropout_mean: float,
@@ -191,7 +191,7 @@ def dropout_random_ellipses(
 
     return depth_img
 
-
+# 对点云应用体素化（voxelization），并从每个体素内选择一个点来代表该体素。这通常用于减少点云数据量，同时保留空间结构信息。
 def get_one_point_per_voxel_from_pointcloud(
     unbatched_xyz: torch.Tensor,
     unbatched_batch_ids: torch.Tensor,
@@ -238,7 +238,7 @@ def get_one_point_per_voxel_from_pointcloud(
     # We return the indices into the original data, for consistency with fps
     return unique_grid_xyz_indices
 
-
+# 返回给定点云在每个维度上的最小值和最大值。这通常用于确定点云的空间范围或边界。
 def get_bounds(points: Tensor, tol: float = 1e-4):
     """Returns min and max along each dimension
 
