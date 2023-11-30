@@ -4,7 +4,26 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+"""
+这段代码定义了 `PPOAgent` 类，是一个专门用于执行基于PPO算法训练的策略或技能的智能体。
+这个类从 `habitat.core.agent.Agent` 类继承，并增加了一些专门用于PPO策略执行的方法和属性。以下是主要的功能点：
 
+1. **初始化**：构造函数初始化智能体，加载模型配置、观测转换器、动作空间等。它可以配置为连续或离散动作空间，并可加载训练好的模型权重。
+
+2. **随机种子设置**：`set_random_seed` 和 `sample_random_seed` 函数用于设置和采样随机种子，确保结果的可重复性。
+
+3. **动作映射**：`_map_continuous_habitat_actions` 和 `_map_discrete_habitat_actions` 函数将Habitat环境中定义的动作映射到机器人动作空间中。
+这包括机器人的基本移动、转向、臂部动作等。
+
+4. **观测处理**：`convert_to_habitat_obs_space` 函数将传入的观测数据转换成智能体所需的格式，包括深度图的归一化和其他任务相关的信息处理。
+
+5. **动作执行**：`act` 函数根据当前的观测数据和内部状态，使用训练好的策略网络来决定下一步的动作。它处理连续和离散动作空间，并根据策略的输出执行相应的动作。
+
+6. **PPO策略执行**：此类主要用于执行基于PPO算法训练的策略，适用于各种导航和操纵任务。
+
+这个智能体类设计用于在模拟环境（如Habitat环境）中执行复杂任务，利用预训练的PPO策略来决策和执行动作。
+
+"""
 import copy
 import random
 from collections import OrderedDict
