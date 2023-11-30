@@ -22,6 +22,21 @@ from home_robot.agent.ovmm_agent.ppo_agent import PPOAgent
 from home_robot.core.interfaces import DiscreteNavigationAction, Observations
 from home_robot.manipulation import HeuristicPlacePolicy
 
+"""
+"OpenVocabManipAgent" 类。这个类是一个代理（Agent），
+用于在机器人的导航和操控任务中使用大规模语言模型（Large Language Model，简称LLM）。
+"OvmmLLMAgent" 的目的是在处理对象导航和操控任务时，利用语言模型来增强代理的认知和决策能力。
+使用CLIP模型：类中使用了CLIP（Contrastive Language–Image Pretraining）模型，
+这是一个结合了视觉和文本信息的深度学习模型。CLIP可以同时处理图像和文本数据，提供更丰富的语义理解。
+
+记忆更新：类中包含一个方法 _update_memory，用于根据当前观测更新代理的记忆。这个记忆用于存储重要对象的特征和状态。
+
+图像分割：使用 _segment_goal 方法从观测中分割出特定对象的图像，这有助于更准确地理解和处理环境中的对象。
+
+状态机：继承自父类 "OpenVocabManipAgent"，类使用状态机来控制不同技能的执行。
+
+环境交互：代理接收环境的观测（如摄像头图像、深度信息等），并根据这些信息执行动作。
+"""
 
 class Skill(IntEnum):
     NAV_TO_OBJ = auto()
