@@ -26,7 +26,8 @@ class ExplorationAgent(Agent):
 
     # Flag for debugging data flow and task configuraiton
     verbose = False
-
+    
+    # 初始化 ExplorationAgent 类的实例。设置最大步数、环境数量、全景视图开始步数、地图状态、规划器和其他配置参数。
     def __init__(self, config, device_id: int = 0):
         self.max_steps = config.AGENT.max_steps
         self.num_environments = config.NUM_ENVIRONMENTS
@@ -86,6 +87,7 @@ class ExplorationAgent(Agent):
     # ------------------------------------------------------------------
 
     @torch.no_grad()
+    # 准备低级规划器的输入，从观测数据中提取必要信息，并将其转换为规划器所需的格式。这是代理与矢量化环境交互的主要函数之一。
     def prepare_planner_inputs(
         self,
         obs: torch.Tensor,
@@ -198,14 +200,16 @@ class ExplorationAgent(Agent):
         ]
 
         return planner_inputs, vis_inputs
-
+        
+    # 初始化或重置代理的状态，适用于矢量化环境或特定的环境实例。
     def reset_vectorized(self):
         """Initialize agent state."""
         self.timesteps = [0] * self.num_environments
         self.timesteps_before_goal_update = [0] * self.num_environments
         self.last_poses = [np.zeros(3)] * self.num_environments
         self.geometric_map.init_map_and_pose()
-
+        
+    # 初始化或重置代理的状态，适用于矢量化环境或特定的环境实例。
     def reset_vectorized_for_env(self, e: int):
         """Initialize agent state for a specific environment."""
         self.timesteps[e] = 0
@@ -217,13 +221,14 @@ class ExplorationAgent(Agent):
     # Inference methods to interact with the robot or a single un-vectorized
     # simulation environment
     # ---------------------------------------------------------------------
-
+    # 初始化代理状态，准备进行新的任务或环境实例。
     def reset(self):
         """Initialize agent state."""
         self.reset_vectorized()
         self.planner.reset()
         self.episode_panorama_start_steps = self.panorama_start_steps
-
+        
+    # 代理的行为函数，结合观测数据、语义映射和规划器来决定下一步行动。
     def act(self, obs: Observations) -> Tuple[DiscreteNavigationAction, Dict[str, Any]]:
         """Act end-to-end."""
         # t0 = time.time()
@@ -270,7 +275,8 @@ class ExplorationAgent(Agent):
         info = {**planner_inputs[0], **vis_inputs[0]}
 
         return action, info
-
+        
+    # 预处理观测数据，将其转换为适合语义映射处理的格式。
     def _preprocess_obs(self, obs: Observations):
         """Take a home-robot observation, preprocess it to put it into the correct format for the
         semantic map.
