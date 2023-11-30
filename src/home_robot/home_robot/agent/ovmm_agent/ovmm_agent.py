@@ -21,7 +21,20 @@ from home_robot.core.interfaces import DiscreteNavigationAction, Observations
 from home_robot.manipulation import HeuristicPickPolicy, HeuristicPlacePolicy
 from home_robot.perception.constants import RearrangeBasicCategories
 
+"""
+为了模拟或实际控制一个机器人，使其能够在环境中执行复杂的任务
 
+技能处理：类中定义了不同的技能，例如导航至对象（NAV_TO_OBJ）、注视对象（GAZE_AT_OBJ）、拾取（PICK）、
+导航至接收器（NAV_TO_REC）、注视接收器（GAZE_AT_REC）和放置（PLACE）。每个技能都有相应的方法来处理执行逻辑。
+
+状态机：类使用状态机来控制不同技能的执行。根据当前的状态和环境的观测，代理决定下一步要执行的动作和转换到的新状态。
+
+感知处理：代理使用感知模块（如 "OvmmPerception"）来解析环境数据，用于决策。
+
+策略执行：根据当前的技能和环境状态，代理执行特定的策略，例如导航、抓取物体或放置物体。
+
+环境交互：代理接收环境的观测（如摄像头图像、深度信息等），并根据这些信息执行动作。
+"""
 class Skill(IntEnum):
     NAV_TO_OBJ = auto()
     GAZE_AT_OBJ = auto()
