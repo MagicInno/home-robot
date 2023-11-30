@@ -1,20 +1,19 @@
-Platform-agnostic robot control code that
-1. Consumes / logs sensor data
-2. Computes action commands
+ObjectNavAgentModule: 这个模块定义了一个用于对象导航任务的智能体。它主要负责处理观测数据，更新地图信息，预测高层次的目标，并从地图特征中提取目标。它处理序列化观测数据，并返回多个输出，包括目标地图、最终的局部和全局地图、序列化的局部和全局姿势等。
 
-## Instructions
-```
-mrp up
-```
-This launches:
-- State estimation node
-- Continuous controller node
+DiffDriveVelocityController: 定义了一个差分驱动机器人的速度控制器，用于生成左右轮的速度。它包含逻辑来根据目标的位置和朝向计算速度。
 
-## Notes
+GotoVelocityController: 用于移动差分驱动机器人到一个目标位置的控制器。它处理机器人的当前姿势和目标姿势，并计算控制命令。
 
-TODO migrate here:
-- Control stack in `fairo/droidlet/lowlevel`
-    - Austin's velocity control logic
-    - SLAM & odom localization services
-    - Planning services (map builder, FMMPlanner)
-- Most of cpaxton/home_robot
+TrajFollower: 轨迹跟踪器，用于根据给定的轨迹计算控制命令。它使用PID控制逻辑来调整机器人的移动，确保其沿预定轨迹行驶。
+
+NavVisualizer: 用于可视化单一图像目标导航任务。它负责创建和更新导航过程中的可视化元素，如目标图像、观测图像、地图预测等。
+
+OpenVocabManipAgent: 这个智能体用于开放词汇操纵任务。它基于2D语义地图找到对象，并执行抓取、放置等操作。它处理不同的技能（如导航到对象、注视对象、抓取、放置等），并在这些技能之间切换。
+
+OvmmLLMAgent: 一个实验性的智能体，使用语言模型和视觉模型（如CLIP）来识别和操作对象。它试图通过语义理解和视觉识别来执行任务。
+
+OvmmPerception: 用于OVMM智能体的感知包装器。它执行一些观测数据预处理，并为OVMM技能维护和切换词汇表。
+
+PPOAgent: 一个使用PPO（Proximal Policy Optimization）策略的智能体。它加载训练好的策略，并在环境中采取动作。它支持连续和离散动作，并可以处理不同的观测数据转换。
+
+RandomAgent: 一个随机智能体，随机选择离散或连续动作。用于测试和基准场景，以评估环境难度或作为复杂智能体的对照组。
