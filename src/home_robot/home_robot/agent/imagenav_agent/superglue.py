@@ -24,7 +24,9 @@ from home_robot.agent.imagenav_agent.SuperGluePretrainedNetwork.models.matching 
 
 matplotlib.use("Agg")
 
-
+"""
+用于实现图像间的特征点匹配。该类主要基于 SuperPoint 和 SuperGlue 算法进行关键点检测和描述，并计算两张图像间的关键点匹配。
+"""
 class Matching(nn.Module):
     """ " Implement matching between images"""
 
@@ -35,6 +37,8 @@ class Matching(nn.Module):
         default_vis_dir: str,
         print_images: bool,
     ) -> None:
+        # 初始化 Matching 类的实例。配置了 SuperPoint 和 SuperGlue 算法的参数，并设置设备和可视化目录。
+
         super().__init__()
         self._device = torch.device(f"cuda:{device}")
         self.matcher = (
@@ -60,6 +64,8 @@ class Matching(nn.Module):
         self.vis_dir = default_vis_dir
 
     def set_vis_dir(self, episode_id: str) -> None:
+        # 设置每个任务的可视化目录。
+
         if self.print_images:
             self.vis_dir = os.path.join(self.default_vis_dir, str(episode_id))
             shutil.rmtree(self.vis_dir, ignore_errors=True)
@@ -67,6 +73,8 @@ class Matching(nn.Module):
 
     @staticmethod
     def _make_matching_plot(
+        # 生成匹配结果的可视化图像，并将结果保存到磁盘。这涉及到绘制关键点、匹配线和配色方案。
+
         img0: np.ndarray,
         img1: np.ndarray,
         kpts0: np.ndarray,
@@ -169,6 +177,8 @@ class Matching(nn.Module):
         matcher_outputs: Dict[str, Any],
         step: int,
     ) -> None:
+        # 对 SuperPoint 和 SuperGlue 的输入和输出进行可视化，以便于理解匹配过程。
+
         """Visualize the input/output of running SuperPoint and SuperGlue inference"""
         if not self.print_images:
             return
@@ -216,6 +226,8 @@ class Matching(nn.Module):
         )
 
     def _preprocess_image(self, img: np.ndarray) -> Tensor:
+        # 预处理图像以便于 SuperPoint 算法进行关键点检测。
+
         """Prepare an image for SuperPoint inference"""
         img_in = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
         img_in = img_in.astype("float32") / 255.0
@@ -224,6 +236,8 @@ class Matching(nn.Module):
 
     @torch.no_grad()
     def get_goal_image_keypoints(
+        # 对目标图像进行 SuperPoint 关键点检测，并返回检测到的关键点。
+
         self, goal_image: np.ndarray, idx: int = 0
     ) -> Tuple[np.ndarray, Dict[str, Any]]:
         """Run SuperPoint inference on a single image"""
@@ -240,6 +254,8 @@ class Matching(nn.Module):
         goal_image_keypoints: Optional[Dict[str, Any]] = None,
         step: Optional[int] = None,
     ):
+        # 计算两张图像（如 RGB 图像和目标图像）之间的关键点匹配。这包括使用 SuperPoint 检测关键点，然后使用 SuperGlue 匹配这些关键点，并返回匹配结果和置信度。
+
         """Computes and describes keypoints using SuperPoint and matches
         keypoints between an RGB image and a goal image using SuperGlue.
         Either goal_image or goal_image_keypoints must be provided.
