@@ -19,7 +19,22 @@ from home_robot.agent.ovmm_agent.ovmm_perception import (
 from home_robot.core.abstract_agent import Agent
 from home_robot.core.interfaces import Action, DiscreteNavigationAction, Observations
 from home_robot.manipulation import HeuristicPlacePolicy
+"""
+它是一个专门为捡起和放置物体任务设计的智能体。这个智能体基于一个称为 OpenVocabManipAgent 的更通用的对象操纵智能体。
+PickAndPlaceAgent 类用于处理更具体的“拾取和放置”类型的任务，其中包括找到特定物体、导航至该物体、拾取它，然后导航至目标位置并放置该物体。此类的主要功能包括：
 
+初始化：构造函数初始化了多个子智能体，包括用于导航和放置物体的智能体。此外，还可以通过参数控制跳过某些步骤，以便于调试。
+
+状态机：这个智能体使用一个状态机（SimpleTaskState 枚举类）来追踪任务的不同阶段，例如寻找物体、导航至物体、拾取物体等。
+
+处理观测数据：_preprocess_obs_for_find 和 _preprocess_obs_for_place 方法用于处理接收到的观测数据，准备它们以供后续的任务步骤使用。
+
+执行任务：act 方法根据当前的任务状态调用相应的子智能体来执行特定的动作。这包括导航、定位、拾取和放置等动作。
+
+感知处理：使用 OvmmPerception 类处理视觉感知数据，这有助于智能体识别和理解其环境。
+
+这个智能体类设计用于在仿真或实际机器人环境中执行复杂的拾取和放置任务。通过综合使用导航、感知和操纵的多种技能，它可以在不同环境中灵活地完成任务。
+"""
 
 class SimpleTaskState(Enum):
     """Track task state."""
