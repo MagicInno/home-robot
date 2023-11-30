@@ -14,7 +14,22 @@ from home_robot.core.interfaces import (
     Observations,
 )
 
+"""
+这段代码定义了一个名为 `RandomAgent` 的智能体类，它从 `home_robot.core.abstract_agent.Agent` 类继承。
+`RandomAgent` 是一个随机智能体，它会在给定的动作空间内随机选择动作。以下是其主要特点：
 
+1. **初始化**: 构造函数初始化智能体，并设置一些关键参数，例如抓取和释放物体的概率、停止的概率、最大前进距离、最大转向角度等。
+
+2. **动作选择**: `act` 函数是智能体的主要函数，它根据当前的观测数据选择一个动作。动作可以是离散的（例如移动前进、左转、右转等）
+或连续的（包括机械臂关节的移动和基本的XYT移动）。
+
+3. **随机动作**: 智能体会随机决定是进行抓取、释放物体、停止或其他动作。这是通过生成一个随机数并根据预定义的概率阈值来决定的。
+
+4. **复位功能**: `reset`, `reset_vectorized`, 和 `reset_vectorized_for_env` 函数用于在任务开始或特定环境下重置智能体的内部状态。
+
+`RandomAgent` 类适用于测试和基准场景，其中智能体的行为不是由复杂的策略或模型驱动，而是完全随机的。
+这种类型的智能体可以用来评估环境的难度或作为其他更复杂智能体的对照组。
+"""
 class RandomAgent(Agent):
     """A random agent that takes random discrete or continuous actions."""
 
