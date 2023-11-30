@@ -18,10 +18,16 @@ log = logging.getLogger(__name__)
 
 DEFAULT_CFG_NAME = "noplan_velocity_sim"
 
+"""
+定义了一个差分驱动机器人的速度控制器，用于导航到指定的目标位置。该控制器支持动态更新机器人的目标位置，并计算到达该位置所需的线速度和角速度。
 
+
+"""
 def xyt_global_to_base(xyt_world2target, xyt_world2base):
     """Transforms SE2 coordinates from global frame to local frame
-
+    
+这两个函数用于在全局坐标系和机器人的本地坐标系之间转换 SE2（平面刚体运动）坐标。
+这在导航中非常有用，因为需要将目标位置和机器人的当前位置相对于一个共同的参考框架进行比较。
     This function was created to temporarily remove dependency on sophuspy from the controller.
     TODO: Unify geometry utils across repository
 
@@ -48,6 +54,13 @@ def xyt_global_to_base(xyt_world2target, xyt_world2base):
 
 def xyt_base_to_global(xyt_base2target, xyt_world2base):
     """Transforms SE2 coordinates from local frame to global frame
+
+    这是一个用于差分驱动机器人的高级控制器。
+该控制器使用 DDVelocityControlNoplan 控制模块来计算速度指令。
+可以动态更新目标位置（update_goal 方法）和机器人的当前位置（update_pose_feedback 方法）。
+compute_control 方法计算从当前位置到目标位置的线速度和角速度指令，如果达到目标则返回标志 done。
+支持设置是否跟踪目标方向（set_yaw_tracking 方法），以及在特定条件下允许机器人倒退（allow_reverse 参数）。
+
 
     This function was created to temporarily remove dependency on sophuspy from the controller.
     TODO: Unify geometry utils across repository
