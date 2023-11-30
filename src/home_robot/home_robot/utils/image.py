@@ -18,7 +18,7 @@ class Camera(object):
     Simple pinhole camera model. Contains parameters for projecting from depth to xyz, and saving information about camera position for planning.
     TODO: Move this to utils/cameras.py?
     """
-
+    # 计算出相机的内参
     @staticmethod
     def from_width_height_fov(
         width: float,
@@ -87,6 +87,7 @@ class Camera(object):
         self.orn = orn
         self.K = np.array([[self.fx, 0, self.px], [0, self.fy, self.py], [0, 0, 1]])
 
+    # 将一个相机对象的重要属性和配置转换为一个字典格式
     def to_dict(self):
         """create a dictionary so that we can extract the necessary information for
         creating point clouds later on if we so desire"""
@@ -110,7 +111,8 @@ class Camera(object):
 
     def get_pose(self):
         return self.pose_matrix.copy()
-
+        
+    # 用于将深度图像转换为3D点云
     def depth_to_xyz(self, depth):
         """get depth from numpy using simple pinhole self model"""
         indices = np.indices((self.height, self.width), dtype=np.float32).transpose(
@@ -124,6 +126,7 @@ class Camera(object):
         xyz = np.stack([x, y, z], axis=-1)
         return xyz
 
+    # 处理和修正深度图像。它的目的是将超出指定范围的深度值（即小于近平面距离或大于远平面距离的值）设置为零
     def fix_depth(self, depth):
         if isinstance(depth, np.ndarray):
             depth = depth.copy()
@@ -135,12 +138,19 @@ class Camera(object):
         depth[depth < self.near_val] = 0
         return depth
 
-
+# 使用 OpenGL 视觉模型的深度图像转换为真实世界中的距离值。
+"""
+函数内的公式 (near * far) / (far - depth * (far - near)) 
+用于将 OpenGL 深度缓冲中的值转换为实际的世界空间距离。
+这里的 depth 是从深度缓冲获取的值，near 和 far 分别是相机的近平面和远平面距离。
+"""
 def z_from_opengl_depth(depth, camera: Camera):
     near = camera.near_val
     far = camera.far_val
     # return (2.0 * near * far) / (near + far - depth * (far - near))
     return (near * far) / (far - depth * (far - near))
+    # 经过计算后，函数返回每个深度值对应的真实世界距离。
+
 
 
 # We apply this correction to xyz when computing it in sim
@@ -148,7 +158,7 @@ def z_from_opengl_depth(depth, camera: Camera):
 T_CORRECTION = tra.euler_matrix(0, 0, np.pi / 2)
 R_CORRECTION = T_CORRECTION[:3, :3]
 
-
+# 将基于 OpenGL 模型的深度图像转换为三维空间中的坐标点（点云）
 def opengl_depth_to_xyz(depth, camera: Camera):
     """get depth from numpy using simple pinhole camera model"""
     indices = np.indices((camera.height, camera.width), dtype=np.float32).transpose(
@@ -163,7 +173,7 @@ def opengl_depth_to_xyz(depth, camera: Camera):
     xyz = np.stack([x, y, z], axis=-1) @ R_CORRECTION
     return xyz
 
-
+# 将深度图像转换为三维空间中的点云。
 def depth_to_xyz(depth, camera: Camera):
     """get depth from numpy using simple pinhole camera model"""
     indices = np.indices((camera.height, camera.width), dtype=np.float32).transpose(
@@ -177,7 +187,7 @@ def depth_to_xyz(depth, camera: Camera):
     xyz = np.stack([x, y, z], axis=-1)
     return xyz
 
-
+# 对二维图像中的掩码（mask）进行平滑处理的。
 def smooth_mask(mask, kernel=None, num_iterations=3):
     """Dilate and then erode.
 
@@ -349,7 +359,7 @@ def get_cropped_image_with_padding(self, image, bbox, padding: float = 1.0):
     ]
     return cropped_image
 
-
+# 对图像进行缩放（插值）操作的。
 def interpolate_image(image: Tensor, scale_factor: float = 1.0, mode: str = "nearest"):
     """
     Interpolates images by the specified scale_factor using the specific interpolation mode.
