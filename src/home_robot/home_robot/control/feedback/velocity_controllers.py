@@ -10,9 +10,13 @@ from omegaconf import DictConfig
 
 from home_robot.utils.geometry import normalize_ang_error
 
+# 这是一个抽象类，定义了差分驱动机器人速度控制器的基本结构。
 
 class DiffDriveVelocityController(abc.ABC):
     """
+    这是一个抽象类，定义了差分驱动机器人速度控制器的基本结构。
+它包括设置线性和角速度误差容忍度的方法。
+定义了一个抽象方法 __call__，该方法需要在子类中具体实现，用于根据当前位置误差计算轮速。
     Abstract class for differential drive robot velocity controllers.
     """
 
@@ -32,6 +36,10 @@ class DiffDriveVelocityController(abc.ABC):
 
 class DDVelocityControlNoplan(DiffDriveVelocityController):
     """
+    这个类继承自 DiffDriveVelocityController，提供了具体的速度控制实现。
+它使用配置文件 cfg 来初始化控制器的参数。
+包括了一系列方法来更新和重置速度控制器的参数，如最大速度、加速度和误差容忍度。
+__call__ 方法实现了基于当前位置误差的速度计算逻辑。根据位置误差的大小和方向，计算出线性速度 v_cmd 和角速度 w_cmd，并判断是否已到达目标位置。
     Control logic for differential drive robot velocity control.
     Does not plan at all, instead uses heuristics to gravitate towards the goal.
     """
