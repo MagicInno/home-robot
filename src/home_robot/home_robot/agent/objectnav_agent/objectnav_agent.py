@@ -26,6 +26,10 @@ debug_frontier_map = False
 
 class ObjectNavAgent(Agent):
     """Simple object nav agent based on a 2D semantic map"""
+    """
+    ObjectNavAgent 类是一个用于基于 2D 语义地图进行目标导航的代理。
+    它使用离散规划器（DiscretePlanner）来规划路径，并通过处理观测数据来决定行动。
+    """
 
     # Flag for debugging data flow and task configuraiton
     verbose = False
@@ -37,6 +41,8 @@ class ObjectNavAgent(Agent):
         min_goal_distance_cm: float = 50.0,
         continuous_angle_tolerance: float = 30.0,
     ):
+        # 初始化 ObjectNavAgent 类的实例。配置了代理的状态、语义地图状态（Categorical2DSemanticMapState）、规划器（DiscretePlanner）等。
+
         self.max_steps = config.AGENT.max_steps
         self.num_environments = config.NUM_ENVIRONMENTS
         self.store_all_categories_in_map = getattr(
@@ -155,6 +161,8 @@ class ObjectNavAgent(Agent):
         nav_to_recep: torch.Tensor = None,
         camera_pose: torch.Tensor = None,
     ) -> Tuple[List[dict], List[dict]]:
+        # 根据当前观测数据准备规划器的输入。这包括处理图像、深度、语义分类，并生成目标地图、障碍地图等。
+
         """Prepare low-level planner inputs from an observation - this is
         the main inference function of the agent that lets it interact with
         vectorized environments.
@@ -287,6 +295,8 @@ class ObjectNavAgent(Agent):
         return planner_inputs, vis_inputs
 
     def reset_vectorized(self):
+        # 分别用于重置代理的状态，适用于向量化和单一环境。
+
         """Initialize agent state."""
         self.timesteps = [0] * self.num_environments
         self.timesteps_before_goal_update = [0] * self.num_environments
@@ -324,6 +334,8 @@ class ObjectNavAgent(Agent):
         return None
 
     def act(self, obs: Observations) -> Tuple[DiscreteNavigationAction, Dict[str, Any]]:
+        # 根据当前观测数据来决定代理的下一步行动。包括预处理观测数据、更新地图、使用规划器来决定下一步的移动。
+
         """Act end-to-end."""
         # t0 = time.time()
 
@@ -396,6 +408,8 @@ class ObjectNavAgent(Agent):
         return action, info
 
     def _preprocess_obs(self, obs: Observations):
+        # 对观测数据进行预处理，以适配语义地图的格式。处理了 RGB 图像、深度信息、语义分类等。
+
         """Take a home-robot observation, preprocess it to put it into the correct format for the
         semantic map."""
         rgb = torch.from_numpy(obs.rgb).to(self.device)
