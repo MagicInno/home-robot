@@ -16,8 +16,12 @@ from home_robot.navigation_policy.exploration.frontier_exploration_policy import
 # Do we need to visualize the frontier as we explore?
 debug_frontier_map = False
 
+# 用于处理点云数据并生成探索目标
+# 使用 GeometricMapModule 来更新地图并生成地图特征，然后使用 FrontierExplorationPolicy 来从地图特征中预测探索目标。
+
 
 class ExplorationAgentModule(nn.Module):
+    # 配置了地理映射模块 GeometricMapModule 和探索策略 FrontierExplorationPolicy，其中包括摄像机的视野参数、地图尺寸和分辨率等。
     def __init__(self, config):
         super().__init__()
 
@@ -41,9 +45,11 @@ class ExplorationAgentModule(nn.Module):
         )
 
     @property
+    # 提供更新目标的步数，这是探索策略的一部分。
     def goal_update_steps(self):
         return self.policy.goal_update_steps
-
+    # 用于更新地图并从地图特征预测高级目标。
+    # 接收一系列观测值、姿态变化、重启标志、全局更新标志、相机姿态，以及初始的本地和全局地图和姿态。
     def forward(
         self,
         seq_obs,
