@@ -10,9 +10,10 @@ import open3d as o3d
 import torch
 import trimesh.transformations as tra
 
-
+# 将 NumPy 数组转换为 Open3D 点云对象。
 def numpy_to_pcd(xyz: np.ndarray, rgb: np.ndarray = None) -> o3d.geometry.PointCloud:
     """Create an open3d pointcloud from a single xyz/rgb pair"""
+    # 包含点的 XYZ 坐标的数组和一个可选的包含 RGB 颜色信息的数组，然后创建一个 Open3D 的 PointCloud 对象
     xyz = xyz.reshape(-1, 3)
     if rgb is not None:
         rgb = rgb.reshape(-1, 3)
@@ -22,7 +23,7 @@ def numpy_to_pcd(xyz: np.ndarray, rgb: np.ndarray = None) -> o3d.geometry.PointC
         pcd.colors = o3d.utility.Vector3dVector(rgb)
     return pcd
 
-
+# 将 Open3D 点云对象转换回 NumPy 数组格式。
 def pcd_to_numpy(pcd: o3d.geometry.PointCloud) -> (np.ndarray, np.ndarray):
     """Convert an open3d point cloud into xyz, rgb numpy arrays and return them."""
     xyz = np.asarray(pcd.points)
@@ -68,7 +69,7 @@ def show_pcd(
     if save is not None:
         save_geometries_as_image(geoms, output_path=save)
 
-
+# 创建一组 Open3D 可视化几何体，包括点云和其他可选的视觉辅助元素，如坐标系、箭头、球体和抓取指示器。
 def create_visualization_geometries(
     pcd: Optional[o3d.geometry.PointCloud] = None,
     xyz: Optional[np.ndarray] = None,
