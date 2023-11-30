@@ -19,12 +19,17 @@ from home_robot.core.interfaces import Observations
 from home_robot.perception.detection.detic.detic_mask import Detic
 
 from .superglue import Matching
-
+"""
+预处理原始的 home-Robot 观测数据，以供 ImageNav 代理使用。这个类的主要目的是处理来自虚拟环境的图像、深度和姿态数据，并准备用于代理决策的输入
+"""
 
 class ObsPreprocessor:
     """Preprocess raw home-Robot observations for consumption by an ImageNav agent."""
+    
 
     def __init__(self, config: DictConfig, device: torch.device) -> None:
+        # 初始化 ObsPreprocessor 类的实例。配置了图像尺寸、深度滤波参数、SuperGlue 匹配模块和 Detic 实例分割模块等。
+
         self.device = device
         self.frame_height = config.frame_height
         self.frame_width = config.frame_width
@@ -51,6 +56,8 @@ class ObsPreprocessor:
         self.step = None
 
     def reset(self) -> None:
+        # 重置预处理器的状态，为新的任务或环境实例做准备。这包括清除目标图像、关键点、遮罩和最后一个姿态。
+
         """Reset for a new episode since pre-processing is temporally dependent."""
         self.goal_image = None
         self.goal_image_keypoints = None
@@ -59,6 +66,8 @@ class ObsPreprocessor:
         self.step = 0
 
     def preprocess(
+        # 处理单个时间步的观测数据。提取 RGB 图像、深度数据、相机姿态、关键点匹配和置信度，并进行必要的转换。
+
         self, obs: Observations
     ) -> Tuple[Tensor, Optional[Tensor], ndarray, ndarray]:
         """
@@ -97,6 +106,8 @@ class ObsPreprocessor:
         return obs_preprocessed, pose_delta, camera_pose, matches, confidence
 
     def _preprocess_frame(self, obs: Observations) -> Tuple[Tensor, ndarray, ndarray]:
+        # 预处理单帧图像信息。根据配置调整图像尺寸、应用 SuperGlue 匹配算法，并处理关键点定位。
+
         """Preprocess frame information in the observation."""
 
         def downscale(rgb: ndarray, depth: ndarray) -> Tuple[ndarray, ndarray]:
@@ -163,6 +174,8 @@ class ObsPreprocessor:
         return obs_preprocessed, matches, confidence
 
     def _preprocess_pose_and_delta(self, obs: Observations) -> Tuple[Tensor, ndarray]:
+        # 计算自上一帧以来的姿态变化。结合 GPS 和指南针数据来估算相对位移和旋转。
+
         """merge GPS+compass. Compute the delta from the previous timestep."""
         curr_pose = np.array([obs.gps[0], obs.gps[1], obs.compass[0]])
         pose_delta = (
