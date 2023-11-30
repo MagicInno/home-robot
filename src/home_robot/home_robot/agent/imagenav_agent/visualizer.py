@@ -3,7 +3,10 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-
+"""
+这段代码定义了一个导航可视化器（NavVisualizer），用于可视化单个图像目标导航任务。
+其核心目的是生成和保存有关导航任务的不同可视化视图，例如障碍物地图、目标地图、探索地图、语义图像框架等。
+"""
 import glob
 import os
 import shutil
