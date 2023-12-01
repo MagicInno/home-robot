@@ -3,6 +3,19 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+"""
+查看关键帧图像（view_keyframe_imgs 函数）:
+
+这个函数从一个 HDF5 文件中读取指定试验的关键帧图像，并使用 Matplotlib 显示这些图像。
+file_object 是一个打开的 HDF5 文件对象，trial_name 是试验的名称。
+代码循环遍历每个关键帧，读取图像数据并将其转换为可视化的图像格式，然后使用 plt.imshow(img) 显示图像。
+在 RVIZ 中绘制执行器姿态（plot_ee_pose 函数）:
+
+这个函数从 HDF5 文件中提取每个关键帧的执行器（例如机器人手臂末端）的位置和旋转，然后将这些姿态作为 TF（变换）消息发送到 ROS 中，以便在 RVIZ 中可视化。
+它同样接受一个 HDF5 文件对象和试验名称，还需要一个 ROS TF 广播器（ros_pub）。
+对于每个关键帧，函数读取执行器的位置和旋转，然后创建一个 TransformStamped 消息，其中包含这些信息。
+这个消息被发送到 ROS，可在 RVIZ 中查看。函数在每次发送消息后等待用户输入，以逐一查看每个关键帧的姿态。
+"""
 
 from typing import List, Tuple
 
