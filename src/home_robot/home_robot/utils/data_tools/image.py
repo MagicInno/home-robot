@@ -13,6 +13,41 @@ from pygifsicle import optimize
 from tqdm import tqdm
 
 
+"""
+
+可用于可视化机器人或传感器采集的图像数据。
+
+
+处理 HDF5 文件中存储的图像数据和将图像转换成不同的格式。具体功能如下：
+
+img_from_bytes:
+
+将字节格式的图像数据转换成 NumPy 数组（即图像）。
+可以调整图像的大小，并支持指定图像格式。
+pil_to_bytes 和 img_to_bytes:
+
+将 PIL 图像或 NumPy 数组格式的图像转换成字节格式。
+支持指定图像格式。
+torch_to_bytes:
+
+将 PyTorch 格式（通道在前）的图像转换成字节格式。
+png_to_gif:
+
+从 HDF5 文件的特定键中读取 PNG 图像序列，并将其转换成 GIF 格式。
+支持调整图像大小和保存 GIF 文件。
+pngs_to_gifs 和 schema_to_gifs:
+
+针对 HDF5 文件中的多个组或键，批量转换 PNG 图像为 GIF 格式。
+schema_to_gifs 还包括将多个 GIF 拼接在一起的逻辑。
+png_to_mp4:
+
+类似于 png_to_gif，但将 PNG 图像序列转换为 MP4 视频格式。
+支持设置视频的帧率。
+pngs_to_mp4:
+
+批量处理 HDF5 文件中的图像数据，将 PNG 图像转换为 MP4 视频格式。
+"""
+
 def img_from_bytes(data: bytes, height=None, width=None, format="png") -> np.ndarray:
     """Convert image from png bytes"""
     image = Image.open(io.BytesIO(data), mode="r", formats=[format])
