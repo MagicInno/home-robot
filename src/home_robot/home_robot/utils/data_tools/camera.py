@@ -17,10 +17,22 @@ import torch
 import trimesh
 import trimesh.transformations as tra
 
-
+# 用于存储关于单个摄像机的信息。它包括投影和姿态信息。
 class Camera:
     """Camera object storing information about a single camera.
-    Includes projection and pose information."""
+    Includes projection and pose information.
+    
+    pos: 摄像机的位置。
+orn: 摄像机的方向（方位）。
+height 和 width: 摄像机图像的高度和宽度。
+fx, fy: 摄像机的焦距。
+px, py: 图像中心的像素坐标。
+near_val, far_val: 视锥的近平面和远平面。
+pose_matrix: 摄像机的姿态矩阵。
+proj_matrix, view_matrix: 投影矩阵和视图矩阵（未在 to_dict 方法中使用）。
+fov: 摄像机的视场角度。
+    
+    """
 
     def __init__(
         self,
