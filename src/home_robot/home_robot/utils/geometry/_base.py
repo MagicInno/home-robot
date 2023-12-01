@@ -10,6 +10,27 @@ from scipy.spatial.transform import Rotation
 
 from home_robot.core.interfaces import Pose
 
+"""
+normalize_ang_error: 正规化角度误差，使其范围在 [-π, π)。
+
+xyt_global_to_base: 将点云从全局坐标系转换到基座坐标系。输入为 XYZ 坐标和当前姿态（x, y, θ），输出为转换后的 XYZ。
+
+xyt_base_to_global: 将点云从基座坐标系转换到全局坐标系。输入和输出类似于 xyt_global_to_base。
+
+xyt2sophus: 将 SE2 坐标（x, y, rz）转换为 Sophus SE3 位姿对象。Sophus 是一个用于表达和处理刚体运动的库。
+
+sophus2xyt: 将 Sophus SE3 位姿对象转换为 SE2 坐标（x, y, rz）。
+
+posquat2sophus: 将位置（pos）和四元数（quat）转换为 Sophus SE3 位姿对象。
+
+sophus2posquat: 将 Sophus SE3 位姿对象转换为位置和四元数形式。
+
+obs2xyt: 将 Pose 类型的姿态（包含位置和方向）转换为 SE2 坐标（x, y, rz）。
+
+xyt2obs: 将 SE2 坐标（x, y, rz）转换为 Pose 类型的姿态。
+
+sophus2obs: 将 Sophus SE3 位姿对象转换为 Pose 类型的姿态。
+"""
 
 def normalize_ang_error(ang):
     return (ang + np.pi) % (2 * np.pi) - np.pi
