@@ -23,7 +23,41 @@ import numpy as np
 # Import the writer to save out data to hdf5
 from data_tools.writer import DataWriter
 from mj_envs.utils.viz_paths import plot_paths as plotnsave_paths
+"""
+检查和分析环境（例如机器学习模型中的模拟环境）及其相关策略（策略可以是一个预先训练好的模型或者是一个随机策略）。工具的主要功能包括在屏幕上或离屏渲染环境，
+保存模拟路径为Pickle格式或者为2D图像，以及其他一些可视化和数据记录功能。主要步骤和功能如下：
 
+命令行选项:
+
+env_name: 要加载的环境名称。
+policy_path: 策略文件的路径。
+mode: 策略的模式（探索或评估）。
+seed: 生成环境实例的随机种子。
+num_episodes: 要可视化的剧集数。
+render: 在屏幕上或离屏渲染环境。
+camera_name: 渲染时使用的相机名称。
+output_dir: 保存输出的目录。
+output_name: 保存输出的名称。
+save_paths: 是否保存模拟路径。
+plot_paths: 是否绘制路径的2D图像。
+初始化和加载环境:
+
+根据提供的种子初始化随机生成器。
+加载指定的环境。
+解析策略和输出:
+
+如果提供了策略路径，则从该路径加载策略。
+如果未提供策略路径，则使用随机策略。
+模拟和数据记录:
+
+使用策略在环境中进行模拟。
+记录每一步的观察结果、动作、奖励和完成状态。
+可选择将模拟路径保存为Pickle文件或绘制为2D图像。
+额外的可视化和保存选项:
+
+根据命令行选项在屏幕上或离屏渲染环境。
+保存模拟路径到指定的目录
+"""
 DESC = """
 Helper script to examine an environment and associated policy for behaviors; \n
 - either onscreen, or offscreen, or just rollout without rendering.\n
