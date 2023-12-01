@@ -15,16 +15,21 @@ from home_robot.utils.constants import (
 
 from . import rotation as ru
 
-
+# 创建一个掩码（mask），用于识别深度图像中有效的像素点。后续的处理和分析中，通常只考虑这个掩码内的像素点。
 def valid_depth_mask(depth: np.ndarray) -> np.ndarray:
     """Return a mask of all valid depth pixels."""
     return np.bitwise_and(
         depth != MIN_DEPTH_REPLACEMENT_VALUE, depth != MAX_DEPTH_REPLACEMENT_VALUE
+        # 去除深度图像中的最小和最大值。
+        # MIN_DEPTH_REPLACEMENT_VALUE 通常是一个较小的值，用于表示深度测量值低于传感器可靠测量范围的下限。
+        # MAX_DEPTH_REPLACEMENT_VALUE 通常是一个较大的值，用于表示深度测量值超出传感器可靠测量范围的上限。
     )
 
-
+# 计算相机矩阵，用于深度图像到点云的转换。
 def get_camera_matrix(width, height, fov):
-    """Returns a camera matrix from image size and fov."""
+    """Returns a camera matrix from image size and fov.
+    通过三角函数利用w,h,fov计算相机矩阵。
+    """
     xc = (width - 1.0) / 2.0
     zc = (height - 1.0) / 2.0
     f = (width / 2.0) / np.tan(np.deg2rad(fov / 2.0))
@@ -32,7 +37,7 @@ def get_camera_matrix(width, height, fov):
     camera_matrix = Namespace(**camera_matrix)
     return camera_matrix
 
-
+# 将深度图像 Y 转换成一个三维点云。
 def get_point_cloud_from_z_t(Y_t, camera_matrix, device, scale=1):
     """Projects the depth image Y into a 3D point cloud.
     Inputs:
@@ -68,7 +73,7 @@ def get_point_cloud_from_z_t(Y_t, camera_matrix, device, scale=1):
 
     return XYZ
 
-
+# 根据相机的高度和仰角调整点云，模拟真实世界的视角
 def transform_camera_view_t(XYZ, sensor_height, camera_elevation_degree, device):
     """
     Transforms the point cloud into geocentric frame to account for
@@ -87,7 +92,7 @@ def transform_camera_view_t(XYZ, sensor_height, camera_elevation_degree, device)
     XYZ[..., 2] = XYZ[..., 2] + sensor_height
     return XYZ
 
-
+# 根据机器人的位置，模拟真实世界的视角
 def transform_pose_t(XYZ, current_pose, device):
     """
     Transforms the point cloud into geocentric frame to account for
@@ -106,7 +111,7 @@ def transform_pose_t(XYZ, current_pose, device):
     XYZ[..., 1] += current_pose[1]
     return XYZ
 
-
+# 网格上投影特征点，在CV中常用于生成特征图或积累特征信息
 def splat_feat_nd(init_grid, feat, coords):
     """
     Args:
