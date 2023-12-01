@@ -11,7 +11,23 @@ import torch
 
 import home_robot.utils.data_tools.base as base
 import home_robot.utils.data_tools.image as image
+"""
+用于处理和访问存储在 HDF5 文件中的数据集。这些类主要用于机器学习和数据分析的场景，特别是当涉及到从 HDF5 文件中读取、处理和准备数据供神经网络训练时。以下是具体的功能说明：
 
+Trial 类:
+
+用于表示 HDF5 文件中的单个试验或记录。
+提供了访问特定试验中的配置、图像和其他数据的方法。
+通过 get_conf, get_dict, 和 get_img 方法可以分别获取试验的配置数据、字典格式的数据和图像数据。
+DatasetBase 类:
+
+继承自 torch.utils.data.Dataset，是 PyTorch 数据集的基类。
+负责处理和组织 HDF5 文件中的多个试验或记录，以便于机器学习模型训练。
+通过 process_files 方法读取并处理指定文件夹中的所有 HDF5 文件。
+提供了 __getitem__ 方法，使其可以像标准的 PyTorch 数据集一样被迭代和访问。
+用 get_datum 方法获取特定索引处的数据，该方法在子类中需要被实现。
+
+"""
 
 class Trial(object):
     def __init__(self, name, h5_filename, dataset, group):
