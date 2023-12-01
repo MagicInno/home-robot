@@ -6,6 +6,8 @@
 """
 Tools for using dicts
 """
+
+# 可更新字典，如camera类中to_dict生成的字典。
 from collections import abc
 
 
