@@ -11,6 +11,15 @@ import a0
 
 @dataclasses.dataclass(order=True)
 class ReplayMessage:
+    """
+    使用dataclasses定义了一个名为ReplayMessage的数据类，用于存储重放消息的相关信息。
+包含的字段有：
+timestamp：消息的时间戳。
+pkt（a0.Packet类型）：消息数据包。
+path：消息来源的路径。
+topic：消息的主题。
+reader（a0.ReaderSync类型）：用于读取消息的同步读取器。
+    """
     timestamp: int
     pkt: a0.Packet = dataclasses.field(compare=False)
     path: str = dataclasses.field(compare=False)
@@ -19,6 +28,12 @@ class ReplayMessage:
 
 
 class ReplayManager:
+    """
+    __init__方法：初始化ReplayManager实例。
+参数read_paths是一个路径列表，每个路径指向一个消息记录文件。
+创建一个名为_srcs的字典，其中每个读取路径都映射到一个a0.ReaderSync实例，用于同步读取那个路径下的消息。
+使用queue.PriorityQueue创建一个优先级队列_pq，用于存储并排序即将重放的消息。
+    """
     def __init__(self, read_paths):
         self._srcs = {
             read_path: a0.ReaderSync(a0.File(read_path), a0.INIT_OLDEST)
