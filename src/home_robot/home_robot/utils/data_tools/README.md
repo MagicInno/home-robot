@@ -2,6 +2,8 @@
 # Data Tools
 
 Lightweight tools for creating hdf5 datasets and training on them with a variety of data.
+用于创建 hdf5 数据集并使用各种数据对其进行训练的轻量级工具。
+
 
 
 ## Installation
